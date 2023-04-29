@@ -1,0 +1,21 @@
+import string
+
+def generate_cipher(keyword):
+    # generate cipher sequence from the keyword
+    cipher_seq = ''.join(sorted(set(keyword), key=keyword.index)) + \
+                 ''.join([ch for ch in string.ascii_uppercase if ch not in keyword])
+    return str.maketrans(string.ascii_uppercase, cipher_seq)
+
+def encrypt(plaintext, keyword):
+    cipher = generate_cipher(keyword)
+    return plaintext.upper().translate(cipher)
+plaintext = "This is a secret message."
+keyword = "CIPHER"
+ciphertext = encrypt(plaintext, keyword)
+print(ciphertext)
+def decrypt(ciphertext, keyword):
+    cipher = generate_cipher(keyword)
+    inverse_cipher = str.maketrans(cipher.values(), cipher.keys())
+    return ciphertext.upper().translate(inverse_cipher)
+decrypted_text = decrypt(ciphertext, keyword)
+print(decrypted_text)
