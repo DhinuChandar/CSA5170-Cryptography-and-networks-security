@@ -1,0 +1,62 @@
+# Create the Playfair matrix
+def create_matrix(key):
+    # Remove duplicates from the key
+    key = "".join(dict.fromkeys(key.replace("J", "I")))
+    
+    # Fill the matrix with the remaining letters
+    alphabet = "ABCDEFGHIKLMNOPQRSTUVWXYZ"
+    matrix = []
+    for letter in key + alphabet:
+        if letter not in matrix:
+            matrix.append(letter)
+
+    # Reshape the matrix into a 5x5 grid
+    matrix = [matrix[i:i+5] for i in range(0, 25, 5)]
+    return matrix
+
+# Encrypt a message using the Playfair matrix
+def encrypt_message(plaintext, matrix):
+    # Remove whitespace and convert to uppercase
+    plaintext = plaintext.replace(" ", "").upper()
+    
+    # Replace any occurrences of "J" with "I"
+    plaintext = plaintext.replace("J", "I")
+    
+    # Add a padding "X" if the message has an odd number of letters
+    if len(plaintext) % 2 != 0:
+        plaintext += "X"
+    
+    # Encrypt each pair of letters in the message
+    ciphertext = ""
+    for i in range(0, len(plaintext), 2):
+        pair = plaintext[i:i+2]
+        row1, col1 = find_position(pair[0], matrix)
+        row2, col2 = find_position(pair[1], matrix)
+        if row1 == row2:
+            # Same row
+            ciphertext += matrix[row1][(col1+1)%5]
+            ciphertext += matrix[row2][(col2+1)%5]
+        elif col1 == col2:
+            # Same column
+            ciphertext += matrix[(row1+1)%5][col1]
+            ciphertext += matrix[(row2+1)%5][col2]
+        else:
+            # Rectangle
+            ciphertext += matrix[row1][col2]
+            ciphertext += matrix[row2][col1]
+    
+    return ciphertext
+
+# Find the position of a letter in the Playfair matrix
+def find_position(letter, matrix):
+    for row in range(5):
+        if letter in matrix[row]:
+            col = matrix[row].index(letter)
+            return row, col
+
+# Test the program with the given message and key
+key = "MFHIKUNOPQZVWXYELARGDSTBC"
+matrix = create_matrix(key)
+plaintext = "Must see you over Cadogan West. Coming at once."
+ciphertext = encrypt_message(plaintext, matrix)
+print(ciphertext)
