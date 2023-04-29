@@ -1,0 +1,25 @@
+ciphertext = "53‡‡†305))6*;4826)4‡.)4‡);806*;48†8¶60))85;;]8*;:‡*8†83 (88)5*†;46(;88*96*?;8)*‡(;485);5*†2:*‡(;4956*2(5*—4)8¶8* ;4069285);)6†8)4‡‡;1(‡9;48081;8:8‡1;48†85;4)485†528806*81 (‡9;48;(88;4(‡?34;48)4‡;161;:188;‡?;"
+letter_freq = {}
+for c in ciphertext:
+    if c not in letter_freq:
+        letter_freq[c] = 1
+    else:
+        letter_freq[c] += 1
+
+# Find the most frequent letter
+most_freq_char = max(letter_freq, key=letter_freq.get)
+
+# Find the second most frequent letter
+del letter_freq[most_freq_char]
+second_most_freq_char = max(letter_freq, key=letter_freq.get)
+
+# Assume most frequent character is e and second most frequent character is t
+key = {most_freq_char: 'e', second_most_freq_char: 't'}
+
+# Print decrypted message
+print("Decrypted Message:")
+for c in ciphertext:
+    if c in key:
+        print(key[c], end='')
+    else:
+        print(c, end='')
